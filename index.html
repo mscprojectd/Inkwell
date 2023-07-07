@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Display Data</title>
+    <style>
+        #external-content {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            font-size: 24px;
+            font-weight: bold;
+            animation: fadeEffect 10s ease-in-out infinite alternate;
+        }
+
+        @keyframes fadeEffect {
+            0% {
+                opacity: 0;
+            }
+            100% {
+                opacity: 1;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="external-content"></div>
+
+    <script>
+        var xmlhttp = new XMLHttpRequest();
+        var lines; // Array to store the lines from the text file
+        var currentLine = 0; // Current line index
+
+        xmlhttp.onreadystatechange = function() {
+            if (this.readyState == 4 && this.status == 200) {
+                lines = this.responseText.split('\n'); // Splitting the data into an array of lines
+                setInterval(displayLine, 10 * 1000); // Display a new line every 5 seconds
+            }
+        };
+        xmlhttp.open("GET", "https://display-quotes.s3.ap-south-1.amazonaws.com/external-data.txt", true);
+        xmlhttp.send();
+
+        function displayLine() {
+            if (currentLine < lines.length) {
+                var line = lines[currentLine];
+                document.getElementById("external-content").innerHTML = line;
+                currentLine++;
+            } else {
+                currentLine = 0; // Reset the current line index if it exceeds the lines array length
+            }
+        }
+    </script>
+</body>
+</html>
+
